@@ -1,0 +1,68 @@
+<Window x:Class="RightTriangleApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RightTriangleApp"
+        mc:Ignorable="d"
+        Title="Операции с прямоугольными треугольниками" Height="500" Width="600">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Треугольник 1 -->
+        <GroupBox Grid.Row="0" Header="Треугольник 1" Margin="0,0,0,10">
+            <StackPanel>
+                <TextBlock Text="Катет A:"/>
+                <TextBox x:Name="Triangle1A" Margin="0,0,0,5" Text="3"/>
+                <TextBlock Text="Катет B:"/>
+                <TextBox x:Name="Triangle1B" Margin="0,0,0,10" Text="4"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="Увеличить (++)" Click="IncrementTriangle1_Click" Margin="0,0,5,0" Width="100"/>
+                    <Button Content="Уменьшить (--)" Click="DecrementTriangle1_Click" Width="100"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Треугольник 2 -->
+        <GroupBox Grid.Row="1" Header="Треугольник 2" Margin="0,0,0,10">
+            <StackPanel>
+                <TextBlock Text="Катет A:"/>
+                <TextBox x:Name="Triangle2A" Margin="0,0,0,5" Text="5"/>
+                <TextBlock Text="Катет B:"/>
+                <TextBox x:Name="Triangle2B" Margin="0,0,0,10" Text="12"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Button Content="Увеличить (++)" Click="IncrementTriangle2_Click" Margin="0,0,5,0" Width="100"/>
+                    <Button Content="Уменьшить (--)" Click="DecrementTriangle2_Click" Width="100"/>
+                </StackPanel>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Операции -->
+        <GroupBox Grid.Row="2" Header="Операции" Margin="0,0,0,10">
+            <StackPanel>
+                <Button Content="Сравнить треугольники" Click="CompareTriangles_Click" Margin="0,0,0,5"/>
+                <Button Content="Показать информацию" Click="ShowInfo_Click"/>
+            </StackPanel>
+        </GroupBox>
+
+        <!-- Результаты -->
+        <GroupBox Grid.Row="3" Header="Результаты">
+            <ScrollViewer>
+                <TextBlock x:Name="InfoText" TextWrapping="Wrap" Margin="5"/>
+            </ScrollViewer>
+        </GroupBox>
+
+        <!-- Лог -->
+        <GroupBox Grid.Row="4" Header="Лог операций">
+            <ScrollViewer>
+                <TextBlock x:Name="LogText" TextWrapping="Wrap" Margin="5"/>
+            </ScrollViewer>
+        </GroupBox>
+    </Grid>
+</Window>
