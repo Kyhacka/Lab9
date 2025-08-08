@@ -1,0 +1,204 @@
+using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
+
+namespace RightTriangleApp
+{
+    public partial class MainWindow : Window
+    {
+        private RightTriangle _triangle1;
+        private RightTriangle _triangle2;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            LogMessage("Приложение запущено. Введите параметры треугольников.");
+        }
+
+        private bool TryCreateTriangles()
+        {
+            try
+            {
+                if (!double.TryParse(Triangle1A.Text, out double a1) || a1 <= 0 ||
+                    !double.TryParse(Triangle1B.Text, out double b1) || b1 <= 0)
+                {
+                    throw new ArgumentException("Катеты первого треугольника должны быть положительными числами!");
+                }
+
+                if (!double.TryParse(Triangle2A.Text, out double a2) || a2 <= 0 ||
+                    !double.TryParse(Triangle2B.Text, out double b2) || b2 <= 0)
+                {
+                    throw new ArgumentException("Катеты второго треугольника должны быть положительными числами!");
+                }
+
+                _triangle1 = new RightTriangle(a1, b1);
+                _triangle2 = new RightTriangle(a2, b2);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"Ошибка: {ex.Message}");
+                InfoText.Text = ex.Message;
+                return false;
+            }
+        }
+
+        private void LogMessage(string message)
+        {
+            LogText.Text += $"{DateTime.Now:HH:mm:ss}: {message}\n";
+        }
+
+        private void IncrementTriangle(RightTriangle triangle, TextBox textBoxA, TextBox textBoxB, string triangleName)
+        {
+            triangle++;
+            textBoxA.Text = triangle.CathetusA.ToString();
+            textBoxB.Text = triangle.CathetusB.ToString();
+            LogMessage($"Применена операция ++ к {triangleName}: {triangle}");
+            InfoText.Text = $"Новые параметры {triangleName}:\nКатет A: {triangle.CathetusA}\nКатет B: {triangle.CathetusB}";
+        }
+
+        private void DecrementTriangle(RightTriangle triangle, TextBox textBoxA, TextBox textBoxB, string triangleName)
+        {
+            triangle--;
+            textBoxA.Text = triangle.CathetusA.ToString();
+            textBoxB.Text = triangle.CathetusB.ToString();
+            LogMessage($"Применена операция -- к {triangleName}: {triangle}");
+            InfoText.Text = $"Новые параметры {triangleName}:\nКатет A: {triangle.CathetusA}\nКатет B: {triangle.CathetusB}";
+        }
+
+        private void IncrementTriangle1_Click(object sender, RoutedEventArgs e)
+        {
+            if (TryCreateTriangles())
+            {
+                IncrementTriangle(_triangle1, Triangle1A, Triangle1B, "треугольнику 1");
+            }
+        }
+
+        private void DecrementTriangle1_Click(object sender, RoutedEventArgs e)
+        {
+            if (TryCreateTriangles())
+            {
+                DecrementTriangle(_triangle1, Triangle1A, Triangle1B, "треугольнику 1");
+            }
+        }
+
+        private void IncrementTriangle2_Click(object sender, RoutedEventArgs e)
+        {
+            if (TryCreateTriangles())
+            {
+                IncrementTriangle(_triangle2, Triangle2A, Triangle2B, "треугольнику 2");
+            }
+        }
+
+        private void DecrementTriangle2_Click(object sender, RoutedEventArgs e)
+        {
+            if (TryCreateTriangles())
+            {
+                DecrementTriangle(_triangle2, Triangle2A, Triangle2B, "треугольнику 2");
+            }
+        }
+
+        private void CompareTriangles_Click(object sender, RoutedEventArgs e)
+        {
+            if (TryCreateTriangles())
+            {
+                string result = $"Площадь треугольника 1: {(double)_triangle1:F2}\n";
+                result += $"Площадь треугольника 2: {(double)_triangle2:F2}\n\n";
+                result += $"Треугольник 1 {(_triangle1 <= _triangle2 ? "<=" : ">")} Треугольника 2 по площади\n";
+                result += $"Треугольник 1 {(_triangle1 >= _triangle2 ? ">=" : "<")} Треугольника 2 по площади";
+
+                InfoText.Text = result;
+                LogMessage($"Сравнение треугольников:\n{result}");
+            }
+        }
+
+        private void ShowInfo_Click(object sender, RoutedEventArgs e)
+        {
+            if (TryCreateTriangles())
+            {
+                string info = $"Треугольник 1: {_triangle1}\n";
+                info += $"Треугольник 2: {_triangle2}\n\n";
+                info += $"Площадь треугольника 1: {(double)_triangle1:F2}\n";
+                info += $"Площадь треугольника 2: {(double)_triangle2:F2}\n";
+                info += $"Треугольник 1 существует: {(bool)_triangle1}\n";
+                info += $"Треугольник 2 существует: {(bool)_triangle2}";
+
+                InfoText.Text = info;
+                LogMessage($"Отображена информация о треугольниках:\n{info}");
+            }
+        }
+    }
+
+    public class RightTriangle : INotifyPropertyChanged
+    {
+        private double _cathetusA;
+        private double _cathetusB;
+
+        public double CathetusA
+        {
+            get => _cathetusA;
+            private set
+            {
+                _cathetusA = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public double CathetusB
+        {
+            get => _cathetusB;
+            private set
+            {
+                _cathetusB = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public RightTriangle(double a, double b)
+        {
+            if (a <= 0 || b <= 0)
+                throw new ArgumentException("Катеты должны быть положительными!");
+
+            CathetusA = a;
+            CathetusB = b;
+        }
+
+        public static RightTriangle operator ++(RightTriangle triangle)
+        {
+            triangle.CathetusA *= 2;
+            triangle.CathetusB *= 2;
+            return triangle;
+        }
+
+        public static RightTriangle operator --(RightTriangle triangle)
+        {
+            triangle.CathetusA /= 2;
+            triangle.CathetusB /= 2;
+            return triangle;
+        }
+
+        public static explicit operator double(RightTriangle triangle) =>
+            triangle ? triangle.CathetusA * triangle.CathetusB / 2 : -1;
+
+        public static implicit operator bool(RightTriangle triangle) =>
+            triangle.CathetusA > 0 && triangle.CathetusB > 0;
+
+        public static bool operator <=(RightTriangle t1, RightTriangle t2) =>
+            (double)t1 <= (double)t2;
+
+        public static bool operator >=(RightTriangle t1, RightTriangle t2) =>
+            (double)t1 >= (double)t2;
+
+        public override string ToString() =>
+            $"Катеты: {CathetusA:F2} и {CathetusB:F2}";
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+    }
+}
